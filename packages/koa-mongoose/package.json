@@ -1,5 +1,6 @@
 {
   "name": "@ra-data-simple-rest-backend/koa-mongoose",
+  "private": false,
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
