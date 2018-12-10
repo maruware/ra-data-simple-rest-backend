@@ -2,14 +2,16 @@
   "name": "@ra-data-simple-rest-backend/koa-mongoose",
   "private": false,
   "version": "0.0.1",
-  "description": "",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "postinstall": "postinstall-build dist"
   },
   "author": "maruware",
-  "repository": "maruware/ra-data-simple-rest-backend",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maruware/ra-data-simple-rest-backend.git"
+  },
   "homepage": "https://github.com/maruware/ra-data-simple-rest-backend",
   "license": "MIT",
   "devDependencies": {
@@ -25,5 +27,9 @@
     "koa-router": "^7.4.0",
     "mongoose": "^5.3.15",
     "postinstall-build": "^5.0.3"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/maruware/ra-data-simple-rest-backend/issues"
+  },
+  "description": ""
 }
