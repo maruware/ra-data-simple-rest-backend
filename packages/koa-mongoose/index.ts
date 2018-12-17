@@ -13,7 +13,7 @@ const ACTION_TO_FUNC: {
   [action: string]: (
     router: Router,
     model: Model<any>,
-    toJson: (doc: Document) => {}
+    toJson: (doc: Document) => Promise<any>
   ) => void
 } = {
   [GET_LIST]: getList,
@@ -37,7 +37,7 @@ function rest(
   prefix: string,
   model: Model<any>,
   actions?: Array<string>,
-  toJson?: (doc: Document) => {}
+  toJson?: (doc: Document) => Promise<any>
 ) {
   if (!actions) {
     actions = Object.keys(ACTION_TO_FUNC)
@@ -58,7 +58,7 @@ function rest(
 function getList(
   router: Router,
   model: Model<any>,
-  toJson: (doc: Document) => {}
+  toJson: (doc: Document) => Promise<any>
 ) {
   router.get('/', async (ctx) => {
     console.log(ctx.query)
@@ -89,14 +89,14 @@ function getList(
     const total = await model.count(filter)
 
     ctx.set('Content-Range', `${skip}-${skip + limit}/${total}`)
-    ctx.body = items.map(item => toJson(item))
+    ctx.body = await Promise.all(items.map(item => toJson(item)))
   })
 }
 
 function getOne(
   router: Router,
   model: Model<any>,
-  toJson: (doc: Document) => {}
+  toJson: (doc: Document) => Promise<any>
 ) {
   router.get('/:id', async (ctx, next) => {
     const { id } = ctx.params
@@ -104,26 +104,26 @@ function getOne(
     if (!item) {
       return ctx.throw(404, { error: 'Not fould' })
     }
-    ctx.body = toJson(item)
+    ctx.body = await toJson(item)
   })
 }
 
 function create(
   router: Router,
   model: Model<any>,
-  toJson: (doc: Document) => {}
+  toJson: (doc: Document) => Promise<any>
 ) {
   router.post('/', async (ctx, next) => {
     const data = ctx.request.body
     const item = await model.create(data)
-    ctx.body = toJson(item)
+    ctx.body = await toJson(item)
   })
 }
 
 function update(
   router: Router,
   model: Model<any>,
-  toJson: (doc: Document) => {}
+  toJson: (doc: Document) => Promise<any>
 ) {
   router.put('/:id', async (ctx, next) => {
     const { id } = ctx.params
@@ -133,7 +133,7 @@ function update(
       return ctx.throw(404, { error: 'Not fould' })
     }
     await item.update(data)
-    ctx.body = toJson(item)
+    ctx.body = await toJson(item)
   })
 }
 
