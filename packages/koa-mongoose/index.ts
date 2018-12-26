@@ -61,7 +61,6 @@ function getList(
   toJson: (doc: Document) => Promise<any>
 ) {
   router.get('/', async (ctx) => {
-    console.log(ctx.query)
     let { sort, range, filter } = ctx.query
     if (sort) {
       const a = JSON.parse(sort)
