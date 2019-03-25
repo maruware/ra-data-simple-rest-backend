@@ -10,8 +10,7 @@ export class User extends Model {
 
 User.init(
   {
-    name: DataTypes.STRING,
-    iconKey: DataTypes.STRING
+    name: DataTypes.STRING
   },
   {
     sequelize

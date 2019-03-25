@@ -1,7 +1,7 @@
 import Router from 'koa-router'
 import 'koa-body'
 
-import { Model } from 'sequelize'
+import { Model, WhereOptions, OrderItem } from 'sequelize'
 
 export const GET_LIST = 'GET_LIST'
 export const GET_ONE = 'GET_ONE'
@@ -50,9 +50,9 @@ function getList<M extends Model>(
 ) {
   router.get('/', async (ctx) => {
     let { sort, range, filter } = ctx.query
+    let order: OrderItem = null
     if (sort) {
-      const a = JSON.parse(sort)
-      sort = { [a[0]]: a[1] === 'ASC' ? 1 : -1 }
+      order = JSON.parse(sort)
     }
     let offset = 0
     let limit = 100
@@ -62,11 +62,12 @@ function getList<M extends Model>(
       limit = a[1] - offset
     }
 
-    filter = filter ? JSON.parse(filter) : {}
+    const where: WhereOptions = filter ? JSON.parse(filter) : {}
     const items: M[] = await model.findAll({
-      where: filter,
+      where,
       offset,
-      limit
+      limit,
+      order: [order]
     })
     const total: number = await model.count(filter)
 
