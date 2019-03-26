@@ -28,12 +28,26 @@ describe('User Test', () => {
     let res = await request(server).post('/users').send({name: 'takashi'})
     expect(res.status).toBe(201)
     expect(res.body.id).not.toBeNull()
+    expect(res.body.name).toBe('takashi')
+
+    const {id} = res.body
+
+    // put
+    res = await request(server).put(`/users/${id}`).send({name: 'toru'})
+    expect(res.status).toBe(200)
+    expect(res.body.name).toBe('toru')
+
+    // get
+    res = await request(server).get(`/users/${id}`)
+    expect(res.status).toBe(200)
+    expect(res.body.name).toBe('toru')
 
     await request(server).post('/users').send({name: 'kaori'})
     await request(server).post('/users').send({name: 'bob'})
     await request(server).post('/users').send({name: 'steven'})
 
-    // get
+
+    // get list
     res = await request(server).get('/users').query({
       sort: JSON.stringify(['name', 'ASC']),
       range: JSON.stringify([0, 2])
@@ -41,7 +55,6 @@ describe('User Test', () => {
     expect(res.status).toBe(200)
     expect(res.body).toHaveLength(2)
     const users = res.body
-    console.log(users)
     expect(users[0].name).toBe('bob')
     expect(users[1].name).toBe('kaori')
   })
