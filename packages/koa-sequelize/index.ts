@@ -1,5 +1,4 @@
 import Router from 'koa-router'
-import 'koa-body'
 
 import { Model, WhereOptions, OrderItem } from 'sequelize'
 

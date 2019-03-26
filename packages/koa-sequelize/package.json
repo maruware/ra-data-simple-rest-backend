@@ -20,7 +20,6 @@
   "homepage": "https://github.com/maruware/ra-data-simple-rest-backend#readme",
   "dependencies": {
     "koa": "^2.7.0",
-    "koa-body": "^4.1.0",
     "koa-router": "^7.4.0",
     "postinstall-build": "^5.0.3",
     "sequelize": "^5.1.1"
@@ -33,6 +32,7 @@
     "@types/supertest": "^2.0.7",
     "@types/validator": "^10.9.0",
     "jest": "^24.5.0",
+    "koa-body": "^4.1.0",
     "sqlite3": "^4.0.6",
     "supertest": "^4.0.2",
     "ts-jest": "^24.0.0",
