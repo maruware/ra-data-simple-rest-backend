@@ -1,6 +1,13 @@
+import Koa from 'koa'
 import Router from 'koa-router'
 
 import { Model, WhereOptions, OrderItem } from 'sequelize'
+
+declare module "koa" {
+  interface Request extends Koa.BaseRequest {
+      body?: any;
+  }
+}
 
 export const GET_LIST = 'GET_LIST'
 export const GET_ONE = 'GET_ONE'
