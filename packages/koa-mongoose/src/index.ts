@@ -1,7 +1,13 @@
-import * as Router from 'koa-router'
-import 'koa-bodyparser'
+import Koa from 'koa'
+import Router from 'koa-router'
 
 import { Model, Document } from 'mongoose'
+
+declare module "koa" {
+  interface Request extends Koa.BaseRequest {
+      body?: any;
+  }
+}
 
 export const GET_LIST = 'GET_LIST'
 export const GET_ONE = 'GET_ONE'
@@ -33,11 +39,11 @@ function toJsonDefault(doc: Document) {
   }
 }
 
-function rest(
+function rest<D extends Document, M extends Model<D>>(
   prefix: string,
-  model: Model<any>,
-  actions?: Array<string>,
-  toJson?: (doc: Document) => Promise<any>
+  model: M,
+  actions?: string[],
+  toJson?: (doc: D) => Promise<any>
 ) {
   if (!actions) {
     actions = Object.keys(ACTION_TO_FUNC)
@@ -55,10 +61,10 @@ function rest(
   return router
 }
 
-function getList(
+function getList<D extends Document, M extends Model<D>>(
   router: Router,
-  model: Model<any>,
-  toJson: (doc: Document) => Promise<any>
+  model: M,
+  toJson: (doc: D) => Promise<any>
 ) {
   router.get('/', async (ctx) => {
     let { sort, range, filter } = ctx.query
@@ -92,53 +98,56 @@ function getList(
   })
 }
 
-function getOne(
+function getOne<D extends Document, M extends Model<D>>(
   router: Router,
-  model: Model<any>,
-  toJson: (doc: Document) => Promise<any>
+  model: M,
+  toJson: (doc: D) => Promise<any>
 ) {
   router.get('/:id', async (ctx, next) => {
     const { id } = ctx.params
     const item = await model.findOne({ _id: id })
     if (!item) {
-      return ctx.throw(404, { error: 'Not fould' })
+      ctx.throw(404, { error: 'Not fould' })
     }
     ctx.body = await toJson(item)
   })
 }
 
-function create(
+function create<D extends Document, M extends Model<D>>(
   router: Router,
-  model: Model<any>,
-  toJson: (doc: Document) => Promise<any>
+  model: M,
+  toJson: (doc: D) => Promise<any>
 ) {
   router.post('/', async (ctx, next) => {
     const data = ctx.request.body
     const item = await model.create(data)
+    ctx.status = 201
     ctx.body = await toJson(item)
   })
 }
 
-function update(
+function update<D extends Document, M extends Model<D>>(
   router: Router,
-  model: Model<any>,
-  toJson: (doc: Document) => Promise<any>
+  model: M,
+  toJson: (doc: D) => Promise<any>
 ) {
   router.put('/:id', async (ctx, next) => {
     const { id } = ctx.params
     const data = ctx.request.body
+    console.log("data", data)
     const item = await model.findOne({ _id: id })
     if (!item) {
-      return ctx.throw(404, { error: 'Not fould' })
+      ctx.throw(404, { error: 'Not fould' })
     }
-    await item.update(data)
+    item.set(data)
+    await item.save()
     ctx.body = await toJson(item)
   })
 }
 
-function delete_(
+function delete_<D extends Document, M extends Model<D>>(
   router: Router,
-  model: Model<any>
+  model: M
 ) {
   router.delete('/:id', async (ctx, next) => {
     const { id } = ctx.params
