@@ -1,10 +1,10 @@
-import Koa, {Middleware} from 'koa'
+import Koa, { Middleware } from 'koa'
 import Router from 'koa-router'
 import jwt from 'jsonwebtoken'
 
-declare module "koa" {
+declare module 'koa' {
   interface Request extends Koa.BaseRequest {
-      body?: any;
+    body?: any
   }
 }
 
@@ -16,13 +16,19 @@ interface AdminUser {
 interface BuildOptions {
   expiresIn: string
 }
-export const buildAuth = (jwtSecret: string, admins: AdminUser[], options: BuildOptions = {expiresIn: '2d'}) => {
+export const buildAuth = (
+  jwtSecret: string,
+  admins: AdminUser[],
+  options: BuildOptions = { expiresIn: '2d' }
+) => {
   const router = new Router()
 
   router.post('/', async ctx => {
     const { username, password } = ctx.request.body
 
-    const admin = admins.find(a => a.username === username && a.password === password)
+    const admin = admins.find(
+      a => a.username === username && a.password === password
+    )
     if (!admin) {
       ctx.throw(401, { error: 'Unauthorized' })
     }
@@ -33,8 +39,8 @@ export const buildAuth = (jwtSecret: string, admins: AdminUser[], options: Build
       })
     }
   })
-  
-  router.get('/verify', async (ctx) => {
+
+  router.get('/verify', async ctx => {
     const token = ctx.req.headers.authorization
     if (verifyJwt(token)) {
       ctx.body = 'ok'
@@ -42,7 +48,7 @@ export const buildAuth = (jwtSecret: string, admins: AdminUser[], options: Build
       ctx.throw(401, 'Unauthorized')
     }
   })
-  
+
   const verifyJwt = (token: string) => {
     try {
       const decoded: any = jwt.verify(token, jwtSecret)
@@ -62,8 +68,6 @@ export const buildAuth = (jwtSecret: string, admins: AdminUser[], options: Build
       ctx.throw(401, 'Unauthorized')
     }
   }
-  
-  return {router, middleware}
+
+  return { router, middleware }
 }
-
-

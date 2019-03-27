@@ -20,20 +20,30 @@ describe('User Test', () => {
   it('basic', async () => {
     const app = setupServer()
 
-    const router = rest('/users', User, [CREATE, GET_LIST, GET_ONE, UPDATE, DELETE ])    
+    const router = rest('/users', User, [
+      CREATE,
+      GET_LIST,
+      GET_ONE,
+      UPDATE,
+      DELETE
+    ])
     app.use(router.routes()).use(router.allowedMethods())
     const server = app.callback()
 
     // post
-    let res = await request(server).post('/users').send({name: 'takashi'})
+    let res = await request(server)
+      .post('/users')
+      .send({ name: 'takashi' })
     expect(res.status).toBe(201)
     expect(res.body.id).not.toBeNull()
     expect(res.body.name).toBe('takashi')
 
-    const {id} = res.body
+    const { id } = res.body
 
     // put
-    res = await request(server).put(`/users/${id}`).send({name: 'toru'})
+    res = await request(server)
+      .put(`/users/${id}`)
+      .send({ name: 'toru' })
     expect(res.status).toBe(200)
     expect(res.body.name).toBe('toru')
 
@@ -42,16 +52,23 @@ describe('User Test', () => {
     expect(res.status).toBe(200)
     expect(res.body.name).toBe('toru')
 
-    await request(server).post('/users').send({name: 'kaori'})
-    await request(server).post('/users').send({name: 'bob'})
-    await request(server).post('/users').send({name: 'steven'})
-
+    await request(server)
+      .post('/users')
+      .send({ name: 'kaori' })
+    await request(server)
+      .post('/users')
+      .send({ name: 'bob' })
+    await request(server)
+      .post('/users')
+      .send({ name: 'steven' })
 
     // get list
-    res = await request(server).get('/users').query({
-      sort: JSON.stringify(['name', 'ASC']),
-      range: JSON.stringify([0, 2])
-    })
+    res = await request(server)
+      .get('/users')
+      .query({
+        sort: JSON.stringify(['name', 'ASC']),
+        range: JSON.stringify([0, 2])
+      })
     expect(res.status).toBe(200)
     expect(res.body).toHaveLength(2)
     const users = res.body

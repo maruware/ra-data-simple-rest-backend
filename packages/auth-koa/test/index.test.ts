@@ -3,7 +3,7 @@ import koaBody from 'koa-body'
 import Router from 'koa-router'
 
 import request from 'supertest'
-import {buildAuth} from '../src/index'
+import { buildAuth } from '../src/index'
 
 const setupServer = () => {
   const app = new Koa()
@@ -14,7 +14,7 @@ const setupServer = () => {
 describe('User Test', () => {
   it('basic', async () => {
     const app = setupServer()
-    const admins = [{username: 'takashi', password: 'my_password'}]
+    const admins = [{ username: 'takashi', password: 'my_password' }]
     const auth = buildAuth('my secret', admins)
 
     const router = new Router()
@@ -22,7 +22,7 @@ describe('User Test', () => {
 
     const apiRouter = new Router()
     apiRouter.get('/sample', async ctx => {
-        ctx.body = 'ok'
+      ctx.body = 'ok'
     })
     router.use(auth.middleware, apiRouter.routes(), apiRouter.allowedMethods())
 
@@ -36,17 +36,22 @@ describe('User Test', () => {
     res = await request(server).get('/auth/verify')
     expect(res.status).toBe(401)
 
-    res = await request(server).post('/auth').send(admins[0])
+    res = await request(server)
+      .post('/auth')
+      .send(admins[0])
     expect(res.status).toBe(200)
     expect(res.body.token).toBeTruthy()
 
-    let {token} = res.body
+    let { token } = res.body
 
-    res = await request(server).get('/sample').set('Authorization', token)
+    res = await request(server)
+      .get('/sample')
+      .set('Authorization', token)
     expect(res.status).toBe(200)
 
-    res = await request(server).get('/auth/verify').set('Authorization', token)
+    res = await request(server)
+      .get('/auth/verify')
+      .set('Authorization', token)
     expect(res.status).toBe(200)
-    
   })
 })

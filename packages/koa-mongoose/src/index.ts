@@ -3,9 +3,9 @@ import Router from 'koa-router'
 
 import { Model, Document } from 'mongoose'
 
-declare module "koa" {
+declare module 'koa' {
   interface Request extends Koa.BaseRequest {
-      body?: any;
+    body?: any
   }
 }
 
@@ -66,7 +66,7 @@ function getList<D extends Document, M extends Model<D>>(
   model: M,
   toJson: (doc: D) => Promise<any>
 ) {
-  router.get('/', async (ctx) => {
+  router.get('/', async ctx => {
     let { sort, range, filter } = ctx.query
     if (sort) {
       const a = JSON.parse(sort)
@@ -103,7 +103,7 @@ function getOne<D extends Document, M extends Model<D>>(
   model: M,
   toJson: (doc: D) => Promise<any>
 ) {
-  router.get('/:id', async (ctx, next) => {
+  router.get('/:id', async ctx => {
     const { id } = ctx.params
     const item = await model.findOne({ _id: id })
     if (!item) {
@@ -118,7 +118,7 @@ function create<D extends Document, M extends Model<D>>(
   model: M,
   toJson: (doc: D) => Promise<any>
 ) {
-  router.post('/', async (ctx, next) => {
+  router.post('/', async ctx => {
     const data = ctx.request.body
     const item = await model.create(data)
     ctx.status = 201
@@ -131,10 +131,10 @@ function update<D extends Document, M extends Model<D>>(
   model: M,
   toJson: (doc: D) => Promise<any>
 ) {
-  router.put('/:id', async (ctx, next) => {
+  router.put('/:id', async ctx => {
     const { id } = ctx.params
     const data = ctx.request.body
-    console.log("data", data)
+    console.log('data', data)
     const item = await model.findOne({ _id: id })
     if (!item) {
       ctx.throw(404, { error: 'Not fould' })
@@ -149,7 +149,7 @@ function delete_<D extends Document, M extends Model<D>>(
   router: Router,
   model: M
 ) {
-  router.delete('/:id', async (ctx, next) => {
+  router.delete('/:id', async ctx => {
     const { id } = ctx.params
     await model.deleteOne({ _id: id })
     ctx.body = { id }

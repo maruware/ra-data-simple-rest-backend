@@ -3,9 +3,9 @@ import Router from 'koa-router'
 
 import { Model, WhereOptions, OrderItem } from 'sequelize'
 
-declare module "koa" {
+declare module 'koa' {
   interface Request extends Koa.BaseRequest {
-      body?: any;
+    body?: any
   }
 }
 
@@ -51,10 +51,10 @@ function rest<M extends Model>(
 
 function getList<M extends Model>(
   router: Router,
-  model: {new (): M} & typeof Model,
+  model: { new (): M } & typeof Model,
   toJson: (instance: M) => Promise<any>
 ) {
-  router.get('/', async (ctx) => {
+  router.get('/', async ctx => {
     let { sort, range, filter } = ctx.query
     let order: OrderItem = null
     if (sort) {
@@ -84,10 +84,10 @@ function getList<M extends Model>(
 
 function getOne<M extends Model>(
   router: Router,
-  model: {new (): M} & typeof Model,
+  model: { new (): M } & typeof Model,
   toJson: (instance: M) => Promise<any>
 ) {
-  router.get('/:id', async (ctx, next) => {
+  router.get('/:id', async ctx => {
     const { id } = ctx.params
     const item = await model.findByPk(id)
     if (!item) {
@@ -100,10 +100,10 @@ function getOne<M extends Model>(
 
 function create<M extends Model>(
   router: Router,
-  model: {new (): M} & typeof Model,
+  model: { new (): M } & typeof Model,
   toJson: (instance: M) => Promise<any>
 ) {
-  router.post('/', async (ctx, next) => {
+  router.post('/', async ctx => {
     const data = ctx.request.body
     const item = await model.create(data)
 
@@ -114,10 +114,10 @@ function create<M extends Model>(
 
 function update<M extends Model>(
   router: Router,
-  model: {new (): M} & typeof Model,
+  model: { new (): M } & typeof Model,
   toJson: (instance: M) => Promise<any>
 ) {
-  router.put('/:id', async (ctx, next) => {
+  router.put('/:id', async ctx => {
     const { id } = ctx.params
     const data = ctx.request.body
     const item = await model.findByPk(id)
@@ -132,11 +132,11 @@ function update<M extends Model>(
 
 function delete_<M extends Model>(
   router: Router,
-  model: {new (): M} & typeof Model
+  model: { new (): M } & typeof Model
 ) {
-  router.delete('/:id', async (ctx, next) => {
+  router.delete('/:id', async ctx => {
     const { id } = ctx.params
-    await model.destroy({where: {id}})
+    await model.destroy({ where: { id } })
     ctx.body = { id }
   })
 }
