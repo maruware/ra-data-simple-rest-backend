@@ -13,6 +13,10 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true
   },
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ],
   "exclude": [
     "node_modules",
     "dist"
