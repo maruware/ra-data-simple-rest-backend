@@ -24,6 +24,9 @@ export const buildAuth = (
   const router = new Router()
 
   router.post('/', async ctx => {
+    if (!ctx.request.body || !ctx.request.body.username) {
+      ctx.throw(400)
+    }
     const { username, password } = ctx.request.body
 
     const admin = admins.find(

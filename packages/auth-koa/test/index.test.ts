@@ -7,11 +7,11 @@ import { buildAuth, AdminUser } from '../src/index'
 
 const setupServer = (admins: AdminUser[]) => {
   const app = new Koa()
-  app.use(koaBody())
 
   const auth = buildAuth('my secret', admins)
 
   const router = new Router()
+  router.use(koaBody())
   router.use('/auth', auth.router.routes(), auth.router.allowedMethods())
 
   const apiRouter = new Router()
@@ -71,5 +71,14 @@ describe('User Test', () => {
       .post('/auth')
       .send({ username: 'bob', password: 'my_password' })
     expect(res.status).toBe(401)
+  })
+
+  it('should fail with no body', async () => {
+    const admins = [{ username: 'takashi', password: 'my_password' }]
+
+    const server = setupServer(admins)
+
+    let res = await request(server).post('/auth')
+    expect(res.status).toBe(400)
   })
 })
