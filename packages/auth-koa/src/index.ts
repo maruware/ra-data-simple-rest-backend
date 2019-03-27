@@ -8,7 +8,7 @@ declare module 'koa' {
   }
 }
 
-interface AdminUser {
+export interface AdminUser {
   username: string
   password: string
 }
