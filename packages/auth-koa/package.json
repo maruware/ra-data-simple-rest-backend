@@ -1,0 +1,39 @@
+{
+  "name": "@ra-data-simple-rest-backend/auth-koa",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "postinstall-build dist",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maruware/ra-data-simple-rest-backend.git"
+  },
+  "author": "maruware",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maruware/ra-data-simple-rest-backend/issues"
+  },
+  "homepage": "https://github.com/maruware/ra-data-simple-rest-backend#readme",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.7.0",
+    "koa-body": "^4.1.0",
+    "koa-router": "^7.4.0",
+    "postinstall-build": "^5.0.3",
+    "typescript": "^3.3.4000"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.11",
+    "@types/jsonwebtoken": "^8.3.2",
+    "@types/koa": "^2.0.48",
+    "@types/koa-router": "^7.0.40",
+    "@types/supertest": "^2.0.7",
+    "jest": "^24.5.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.0.0"
+  }
+}
