@@ -1,5 +1,5 @@
-import { User } from './sequelize/user'
-import { sequelize } from './sequelize/connection'
+import { User } from './models/user'
+import { sequelize } from './models/connection'
 
 import rest, { CREATE, GET_LIST, GET_ONE, UPDATE, DELETE } from '../src/index'
 import Koa from 'koa'
