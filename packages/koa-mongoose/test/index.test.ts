@@ -1,3 +1,5 @@
+/* eslint-env jest */
+
 import { connect, User, UserDoc, UserModel } from './models'
 import Koa from 'koa'
 import koaBody from 'koa-body'
