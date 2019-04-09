@@ -2,7 +2,7 @@
 
 import { connect, User, UserDoc, UserModel } from './models'
 import Koa from 'koa'
-import koaBody from 'koa-body'
+import body from 'koa-bodyparser'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongoose } from 'mongoose'
 
@@ -15,7 +15,7 @@ const mongod = new MongoMemoryServer({
 
 const setupServer = () => {
   const app = new Koa()
-  app.use(koaBody())
+  app.use(body())
   return app
 }
 

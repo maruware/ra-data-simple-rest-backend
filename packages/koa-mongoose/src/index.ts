@@ -5,7 +5,7 @@ import { Model, Document } from 'mongoose'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
-    body?: any
+    body: any
   }
 }
 
