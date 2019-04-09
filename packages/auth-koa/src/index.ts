@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
-    body?: any
+    body: any
   }
 }
 

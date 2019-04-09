@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 import Koa from 'koa'
-import koaBody from 'koa-body'
+import body from 'koa-bodyparser'
 import Router from 'koa-router'
 
 import request from 'supertest'
@@ -13,7 +13,7 @@ const setupServer = (admins: AdminUser[]) => {
   const auth = buildAuth('my secret', admins)
 
   const router = new Router()
-  router.use(koaBody())
+  router.use(body())
   router.use('/auth', auth.router.routes(), auth.router.allowedMethods())
 
   const apiRouter = new Router()
