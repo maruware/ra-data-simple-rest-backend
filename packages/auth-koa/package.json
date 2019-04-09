@@ -1,10 +1,11 @@
 {
   "name": "@ra-data-simple-rest-backend/auth-koa",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
     "postinstall": "postinstall-build dist",
     "test": "jest"
   },
