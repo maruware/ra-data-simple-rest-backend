@@ -1,14 +1,15 @@
+/* eslint-env jest */
 import { User } from './models/user'
 import { sequelize } from './models/connection'
 
 import rest, { CREATE, GET_LIST, GET_ONE, UPDATE, DELETE } from '../src/index'
 import Koa from 'koa'
-import koaBody from 'koa-body'
+import body from 'koa-bodyparser'
 import request from 'supertest'
 
 const setupServer = () => {
   const app = new Koa()
-  app.use(koaBody())
+  app.use(body())
   return app
 }
 

@@ -5,7 +5,7 @@ import { Model, WhereOptions, OrderItem } from 'sequelize'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
-    body?: any
+    body: any
   }
 }
 
