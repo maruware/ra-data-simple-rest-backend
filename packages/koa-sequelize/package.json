@@ -1,11 +1,12 @@
 {
   "name": "@ra-data-simple-rest-backend/koa-sequelize",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build",
+    "clean": "rm -rf dist",
+    "prepare": "npm run clean && npm run build",
     "postinstall": "postinstall-build dist",
     "test": "jest"
   },
