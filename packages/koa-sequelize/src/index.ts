@@ -1,7 +1,15 @@
 import Koa from 'koa'
 import Router from 'koa-router'
 
-import { Model, WhereOptions, OrderItem } from 'sequelize'
+import {
+  Model,
+  WhereOptions,
+  OrderItem,
+  FindOptions,
+  CreateOptions,
+  UpdateOptions,
+  DestroyOptions
+} from 'sequelize'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -52,7 +60,8 @@ function rest<M extends Model>(
 function getList<M extends Model>(
   router: Router,
   model: { new (): M } & typeof Model,
-  toJson: (instance: M) => Promise<any>
+  toJson: (instance: M) => Promise<any>,
+  findOptions?: FindOptions
 ) {
   router.get('/', async ctx => {
     let { sort, range, filter } = ctx.query
@@ -73,7 +82,8 @@ function getList<M extends Model>(
       where,
       offset,
       limit,
-      order: [order]
+      order: [order],
+      ...findOptions
     })
     const total: number = await model.count(filter)
 
@@ -85,11 +95,12 @@ function getList<M extends Model>(
 function getOne<M extends Model>(
   router: Router,
   model: { new (): M } & typeof Model,
-  toJson: (instance: M) => Promise<any>
+  toJson: (instance: M) => Promise<any>,
+  findOptions?: FindOptions
 ) {
   router.get('/:id', async ctx => {
     const { id } = ctx.params
-    const item = await model.findByPk(id)
+    const item = await model.findByPk(id, findOptions)
     if (!item) {
       ctx.throw(404, { error: 'Not fould' })
       return
@@ -101,11 +112,12 @@ function getOne<M extends Model>(
 function create<M extends Model>(
   router: Router,
   model: { new (): M } & typeof Model,
-  toJson: (instance: M) => Promise<any>
+  toJson: (instance: M) => Promise<any>,
+  createOptions?: CreateOptions
 ) {
   router.post('/', async ctx => {
     const data = ctx.request.body
-    const item = await model.create(data)
+    const item = await model.create(data, createOptions)
 
     ctx.status = 201
     ctx.body = await toJson(item)
@@ -115,7 +127,8 @@ function create<M extends Model>(
 function update<M extends Model>(
   router: Router,
   model: { new (): M } & typeof Model,
-  toJson: (instance: M) => Promise<any>
+  toJson: (instance: M) => Promise<any>,
+  updateOptions?: UpdateOptions
 ) {
   router.put('/:id', async ctx => {
     const { id } = ctx.params
@@ -125,18 +138,19 @@ function update<M extends Model>(
       ctx.throw(404, { error: 'Not fould' })
       return
     }
-    await item.update(data)
+    await item.update(data, updateOptions)
     ctx.body = await toJson(item)
   })
 }
 
 function delete_<M extends Model>(
   router: Router,
-  model: { new (): M } & typeof Model
+  model: { new (): M } & typeof Model,
+  destroyOptions?: DestroyOptions
 ) {
   router.delete('/:id', async ctx => {
     const { id } = ctx.params
-    await model.destroy({ where: { id } })
+    await model.destroy({ where: { id }, ...destroyOptions })
     ctx.body = { id }
   })
 }
