@@ -22,7 +22,8 @@
       "yoda": "off",
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "error",
-      "no-dupe-class-members": "off"
+      "no-dupe-class-members": "off",
+      "import/first": "off"
     },
     "globals": {
       "fetch": false

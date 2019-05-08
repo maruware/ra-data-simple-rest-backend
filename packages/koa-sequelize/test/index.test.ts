@@ -6,6 +6,7 @@ import rest, { CREATE, GET_LIST, GET_ONE, UPDATE, DELETE } from '../src/index'
 import Koa from 'koa'
 import body from 'koa-bodyparser'
 import request from 'supertest'
+import { Post } from './models/post'
 
 const setupServer = () => {
   const app = new Koa()
@@ -21,14 +22,24 @@ describe('User Test', () => {
   it('basic', async () => {
     const app = setupServer()
 
-    const router = rest('/users', User, [
-      CREATE,
-      GET_LIST,
-      GET_ONE,
-      UPDATE,
-      DELETE
-    ])
-    app.use(router.routes()).use(router.allowedMethods())
+    const usersRouter = rest(
+      '/users',
+      User,
+      [CREATE, GET_LIST, GET_ONE, UPDATE, DELETE],
+      undefined,
+      {
+        GET_LIST: { include: [{ model: Post, as: 'posts' }] },
+        GET_ONE: { include: [{ model: Post, as: 'posts' }] }
+      }
+    )
+    const postsRouter = rest(
+      '/posts',
+      Post,
+      [CREATE, GET_LIST, GET_ONE, UPDATE, DELETE],
+      undefined
+    )
+    app.use(usersRouter.routes()).use(usersRouter.allowedMethods())
+    app.use(postsRouter.routes()).use(postsRouter.allowedMethods())
     const server = app.callback()
 
     // post
@@ -41,6 +52,10 @@ describe('User Test', () => {
 
     const { id } = res.body
 
+    res = await request(server)
+      .post('/posts')
+      .send({ userId: id, title: 'first post' })
+
     // put
     res = await request(server)
       .put(`/users/${id}`)
@@ -52,6 +67,7 @@ describe('User Test', () => {
     res = await request(server).get(`/users/${id}`)
     expect(res.status).toBe(200)
     expect(res.body.name).toBe('toru')
+    expect(res.body.posts).toHaveLength(1)
 
     await request(server)
       .post('/users')

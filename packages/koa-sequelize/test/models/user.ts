@@ -1,4 +1,4 @@
-import { DataTypes, Model } from 'sequelize'
+import { DataTypes, Model, HasMany } from 'sequelize'
 import { sequelize } from './connection'
 
 export class User extends Model {
@@ -6,6 +6,11 @@ export class User extends Model {
   public name: string
   public createdAt: Date
   public updatedAt: Date
+
+  public static associations: {
+    posts: HasMany
+  }
+  public posts: Post[]
 }
 
 User.init(
@@ -16,3 +21,9 @@ User.init(
     sequelize
   }
 )
+import { Post } from './post'
+
+User.hasMany(Post, {
+  foreignKey: 'userId',
+  as: 'posts'
+})

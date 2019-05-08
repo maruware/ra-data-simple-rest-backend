@@ -17,11 +17,13 @@ declare module 'koa' {
   }
 }
 
-export const GET_LIST = 'GET_LIST'
-export const GET_ONE = 'GET_ONE'
-export const CREATE = 'CREATE'
-export const UPDATE = 'UPDATE'
-export const DELETE = 'DELETE'
+type ACTION_TYPE = 'GET_LIST' | 'GET_ONE' | 'CREATE' | 'UPDATE' | 'DELETE'
+
+export const GET_LIST: ACTION_TYPE = 'GET_LIST'
+export const GET_ONE: ACTION_TYPE = 'GET_ONE'
+export const CREATE: ACTION_TYPE = 'CREATE'
+export const UPDATE: ACTION_TYPE = 'UPDATE'
+export const DELETE: ACTION_TYPE = 'DELETE'
 
 const ACTION_TO_FUNC = {
   [GET_LIST]: getList,
@@ -29,6 +31,14 @@ const ACTION_TO_FUNC = {
   [CREATE]: create,
   [UPDATE]: update,
   [DELETE]: delete_
+}
+
+interface QueryOptions {
+  GET_LIST?: FindOptions
+  GET_ONE?: FindOptions
+  CREATE?: CreateOptions
+  UPDATE?: UpdateOptions
+  DELETE?: DestroyOptions
 }
 
 async function toJsonDefault<M extends Model>(instance: M) {
@@ -39,7 +49,8 @@ function rest<M extends Model>(
   prefix: string,
   model: { new (): M } & typeof Model,
   actions?: Array<string>,
-  toJson?: (instance: M) => Promise<any>
+  toJson?: (instance: M) => Promise<any>,
+  queryOptions?: QueryOptions
 ) {
   if (!actions) {
     actions = Object.keys(ACTION_TO_FUNC)
@@ -51,7 +62,8 @@ function rest<M extends Model>(
   const router = new Router({ prefix })
 
   actions.forEach(action => {
-    ACTION_TO_FUNC[action](router, model, toJson)
+    const options = queryOptions && queryOptions[action]
+    ACTION_TO_FUNC[action](router, model, toJson, options)
   })
 
   return router
